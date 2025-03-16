@@ -22,6 +22,7 @@ typedef enum {
     COMMENT_TOKEN,              // comment token
     EQUAL_TOKEN,               // = token
     STRING_TOKEN,              // string token
+    CHAR_TOKEN,                // char token
 } TokenType;
 
 // Token structure
@@ -125,6 +126,23 @@ vector<Token> tokenizer(string s){
             token+=s[cursor];
             cursor++;
             tokens.push_back(Token(token,STRING_TOKEN));
+        }
+        // check if the next token is a char
+        else if(s[cursor]=='\''){
+            token+=s[cursor];
+            cursor++;
+            while(s[cursor]!='\''){
+                token+=s[cursor];
+                cursor++;
+            }
+            token+=s[cursor];
+            cursor++;
+            if(token.size()==3){
+                tokens.push_back(Token(token,CHAR_TOKEN));
+            }
+            else{
+                tokens.push_back(Token(token,INVALID_TOKEN));
+            }
         }
         // check if the next token is a keyword or an identifier
         else if(is_id_start(s[cursor])){
@@ -258,7 +276,8 @@ const char* token_type_str[] = {
     "NOT_TOKEN",
     "COMMENT_TOKEN",
     "EQUAL_TOKEN",
-    "STRING_TOKEN"
+    "STRING_TOKEN",
+    "CHAR_TOKEN"
 };
 int main(){
     string s = "x = 10\ny = 20\nz = 30\n\nif x < y:\n    print(\"x is less than y\")\nelif x > y:\n    print(\"x is greater than y\")\nelse:\n    print(\"x is equal to y\")\n\nif y != z:\n    print(\"y is not equal to z\")\n\nif x + y == z:\n    print(\"x plus y is equal to z\")\n\nif z - y > x:\n    print(\"z minus y is greater than x\")\n\nif x * 2 <= y:\n    print(\"x multiplied by 2 is less than or equal to y\")\n\nif z / y >= 1:\n    print(\"z divided by y is greater than or equal to 1\")\n\nif x % 2 == 0:\n    print(\"x is even\")\n\nif y // x == 2:\n    print(\"y floor divided by x is 2\")\n\nif not (x > z):\n    print(\"x is not greater than z\")\n\nif (x < y) and (y < z):\n    print(\"x is less than y and y is less than z\")\n\nif (x > y) or (y < z):\n    print(\"Either x is greater than y or y is less than z\")";
